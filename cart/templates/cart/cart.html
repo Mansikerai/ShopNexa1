@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Your Cart | ShopNexa</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+
+<div class="container mt-5">
+    <h2 class="mb-4">🛒 Your Cart</h2>
+
+    {% if products %}
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <table class="table align-middle">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Product</th>
+                            <th style="width:180px;">Quantity</th>
+                            <th>Subtotal</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for product in products %}
+                        <tr>
+                            <td>
+                                <strong>{{ product.name }}</strong><br>
+                                <small class="text-muted">₹ {{ product.price }}</small>
+                            </td>
+
+                            
+                            <td>
+                                <a href="{% url 'cart_decrease' product.id %}"
+                                   class="btn btn-outline-secondary btn-sm">−</a>
+
+                                <span class="mx-2 fw-bold">{{ product.quantity }}</span>
+
+                                <a href="{% url 'cart_increase' product.id %}"
+                                   class="btn btn-outline-secondary btn-sm">+</a>
+                            </td>
+
+                            <td>
+                                ₹ {{ product.subtotal }}
+                            </td>
+
+                            <td>
+                                <a href="{% url 'cart_remove' product.id %}"
+                                   class="btn btn-danger btn-sm">
+                                    Remove
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <hr>
+
+                
+                <div class="d-flex justify-content-between align-items-center">
+                    <h4>Total: ₹ {{ total }}</h4>
+
+                    <a href="{% url 'checkout' %}" class="btn btn-dark btn-lg">
+                        Proceed to Checkout
+                    </a>
+                </div>
+
+            </div>
+        </div>
+
+    {% else %}
+        <div class="alert alert-info">
+            Your cart is empty.
+        </div>
+    {% endif %}
+</div>
+
+</body>
+</html>

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Wishlist | ShopNexa</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body style="background:#f8f9fa;">
+
+<!-- NAVBAR -->
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+    <div class="container">
+
+        <!-- LOGO -->
+        <a class="navbar-brand fw-bold" href="/">ShopNexa</a>
+
+        <!-- RIGHT SIDE -->
+        <div class="ms-auto d-flex align-items-center gap-3">
+
+            <!-- WISHLIST -->
+            <a href="{% url 'wishlist' %}" class="btn btn-outline-danger btn-sm">
+                ❤️ Wishlist
+            </a>
+
+            <!-- CART -->
+            <a href="{% url 'cart_detail' %}" class="btn btn-outline-dark btn-sm">
+                🛒 Cart
+            </a>
+            
+
+            <!-- AUTH -->
+            {% if user.is_authenticated %}
+                <span class="fw-semibold">Hi, {{ user.username }}</span>
+                <a href="{% url 'logout' %}" class="btn btn-dark btn-sm">
+                    Logout
+                </a>
+            {% else %}
+                <a href="{% url 'login' %}" class="btn btn-outline-dark btn-sm">
+                    Login
+                </a>
+            {% endif %}
+        </div>
+    </div>
+</nav>
+
+<!-- WISHLIST CONTENT -->
+<div class="container mt-5">
+
+    <h2 class="mb-4 text-center">❤️ My Wishlist</h2>
+
+    {% if products %}
+        <div class="row">
+            {% for product in products %}
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm h-100">
+
+                    <!-- PRODUCT IMAGE -->
+                    <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+
+                    <!-- PRODUCT INFO -->
+                    <div class="card-body text-center">
+                        <h5 class="card-title">{{ product.name }}</h5>
+                        <p class="fw-bold">₹ {{ product.price }}</p>
+
+                        <!-- VIEW PRODUCT -->
+                        <a href="{% url 'product_detail' product.id %}"
+                           class="btn btn-dark btn-sm w-100 mb-2">
+                           View Product
+                        </a>
+
+                        <!-- ✅ REMOVE FROM WISHLIST (THIS IS IMPORTANT) -->
+                        <a href="{% url 'remove_from_wishlist' product.id %}"
+                           class="btn btn-danger btn-sm w-100">
+                           Remove
+                        </a>
+
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="text-center text-muted mt-5">
+            Your wishlist is empty.
+        </p>
+    {% endif %}
+
+</div>
+
+<footer class="bg-dark text-white text-center py-3 mt-5">
+    © 2025 ShopNexa | Furniture & Home Décor
+</footer>
+
+</body>
+</html>

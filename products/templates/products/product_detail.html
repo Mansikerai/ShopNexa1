@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ product.name }} | ShopNexa</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+    <div class="container">
+
+        
+        <a class="navbar-brand fw-bold" href="/">ShopNexa</a>
+
+        <!-- RIGHT SIDE -->
+        <div class="ms-auto d-flex align-items-center gap-3">
+
+            <!-- WISHLIST -->
+            <a href="{% url 'wishlist' %}" class="btn btn-outline-danger btn-sm">
+                ❤️ Wishlist
+            </a>
+
+            <!-- CART -->
+            <a href="{% url 'cart_detail' %}" class="btn btn-outline-dark btn-sm">
+                🛒 Cart
+            </a>
+
+            <!-- AUTH -->
+            {% if user.is_authenticated %}
+                <span class="fw-semibold">Hi, {{ user.username }}</span>
+                <a href="{% url 'logout' %}" class="btn btn-dark btn-sm">
+                    Logout
+                </a>
+            {% else %}
+                <a href="{% url 'login' %}" class="btn btn-outline-dark btn-sm">
+                    Login
+                </a>
+               
+            {% endif %}
+
+        </div>
+
+    </div>
+</nav>
+
+{% if messages %}
+  {% for message in messages %}
+    <div class="alert alert-success text-center">
+      {{ message }}
+    </div>
+  {% endfor %}
+{% endif %}
+
+<div class="container mt-5">
+    <div class="row">
+
+        
+        <div class="col-md-6">
+            <img src="{{ product.image.url }}" class="img-fluid rounded shadow">
+        </div>
+
+        
+        <div class="col-md-6">
+            <h2>{{ product.name }}</h2>
+            <p class="text-muted">{{ product.category.name }}</p>
+
+            <h4 class="fw-bold">₹ {{ product.price }}</h4>
+
+
+            <!-- DESCRIPTION -->
+            <h5 class="mt-4">Product Details</h5>
+            <p style="line-height: 1.8;">
+                {{ product.description }}
+            </p>
+      <a href="{% url 'cart_add' product.id %}" class="btn btn-dark">
+    Add to Cart
+</a>
+
+<a href="{% url 'add_to_wishlist' product.id %}"
+   class="btn btn-outline-danger">
+   ❤️ Add to Wishlist
+</a>
+
+<a href="{% url 'wishlist' %}" class="btn btn-outline-dark ms-2">
+    View Wishlist
+</a>
+
+
+    </div>
+<script>
+    function addToCart(productName) {
+        alert(productName + "Added to cart Successfully!");
+    }
+</script>
+
+   </div>
+</div>
+
+<footer class="bg-dark text-white text-center py-3 mt-5">
+    © 2025 ShopNexa | Furniture & Home Décor
+</footer>
+
+</body>
+</html>
