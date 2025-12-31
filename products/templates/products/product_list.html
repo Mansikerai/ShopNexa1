@@ -143,14 +143,14 @@ if (token) {
     const payload = parseJwt(token);
     const username = payload.username;
 
-    authArea.innerHTML = 
+    authArea.innerHTML = `
         <span class="fw-semibold">Hi, ${username}</span>
         <a href="#" class="btn btn-outline-danger btn-sm ms-2" onclick="logout()">Logout</a>
-    ;
+    `;
 } else {
-    authArea.innerHTML = 
+    authArea.innerHTML = `
         <a href="/login/" class="btn btn-outline-dark btn-sm">Login</a>
-    ;
+    `;
 }
 
 function logout() {
