@@ -10,33 +10,30 @@
 
 <body style="background:#f8f9fa;">
 
-<!-- NAVBAR -->
+
 <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
     <div class="container">
 
-        <!-- LOGO -->
+        
         <a class="navbar-brand fw-bold" href="/">ShopNexa</a>
 
-        <!-- RIGHT SIDE -->
+       
         <div class="ms-auto d-flex align-items-center gap-3">
 
-            <!-- WISHLIST -->
+           
             <a href="{% url 'wishlist' %}" class="btn btn-outline-danger btn-sm">
                 ❤️ Wishlist
             </a>
 
-            <!-- CART -->
+            
             <a href="{% url 'cart_detail' %}" class="btn btn-outline-dark btn-sm">
                 🛒 Cart
             </a>
             
 
-            <!-- AUTH -->
+            
             {% if user.is_authenticated %}
                 <span class="fw-semibold">Hi, {{ user.username }}</span>
-                <a href="{% url 'logout' %}" class="btn btn-dark btn-sm">
-                    Logout
-                </a>
             {% else %}
                 <a href="{% url 'login' %}" class="btn btn-outline-dark btn-sm">
                     Login
@@ -46,7 +43,7 @@
     </div>
 </nav>
 
-<!-- WISHLIST CONTENT -->
+
 <div class="container mt-5">
 
     <h2 class="mb-4 text-center">❤️ My Wishlist</h2>
@@ -57,21 +54,21 @@
             <div class="col-md-4 mb-4">
                 <div class="card shadow-sm h-100">
 
-                    <!-- PRODUCT IMAGE -->
+                    
                     <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
 
-                    <!-- PRODUCT INFO -->
+                   
                     <div class="card-body text-center">
                         <h5 class="card-title">{{ product.name }}</h5>
                         <p class="fw-bold">₹ {{ product.price }}</p>
 
-                        <!-- VIEW PRODUCT -->
+                        
                         <a href="{% url 'product_detail' product.id %}"
                            class="btn btn-dark btn-sm w-100 mb-2">
                            View Product
                         </a>
 
-                        <!-- ✅ REMOVE FROM WISHLIST (THIS IS IMPORTANT) -->
+                        
                         <a href="{% url 'remove_from_wishlist' product.id %}"
                            class="btn btn-danger btn-sm w-100">
                            Remove

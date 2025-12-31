@@ -34,38 +34,28 @@
 </head>
 <body>
 
-<!-- NAVBAR -->
+
 <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
     <div class="container">
 
-        <!-- LOGO -->
+       
         <a class="navbar-brand fw-bold" href="/">ShopNexa</a>
 
-        <!-- RIGHT SIDE -->
+        
         <div class="ms-auto d-flex align-items-center gap-3">
 
-            <!-- WISHLIST -->
+            
             <a href="{% url 'wishlist' %}" class="btn btn-outline-danger btn-sm">
                 ❤️ Wishlist
             </a>
 
-            <!-- CART -->
+            
             <a href="{% url 'cart_detail' %}" class="btn btn-outline-dark btn-sm">
                 🛒 Cart
             </a>
 
-            <!-- AUTH -->
-            {% if user.is_authenticated %}
-                <span class="fw-semibold">Hi, {{ user.username }}</span>
-                <a href="{% url 'logout' %}" class="btn btn-dark btn-sm">
-                    Logout
-                </a>
-            {% else %}
-                <a href="{% url 'login' %}" class="btn btn-outline-dark btn-sm">
-                    Login
-                </a>
-               
-            {% endif %}
+            
+            <span id="auth-area"></span>
 
         </div>
 
@@ -73,12 +63,11 @@
 </nav>
 
 
-<!-- MAIN CONTENT -->
 <div class="container mt-5">
 
     <h2 class="text-center mb-4">Trending Categories</h2>
 
-    <!-- CATEGORY FILTER -->
+    
     <div class="text-center mb-4">
         <a href="/"
            class="btn btn-sm me-2 {% if not selected_category %}btn-dark{% else %}btn-outline-dark{% endif %}">
@@ -98,14 +87,14 @@
         {% endfor %}
     </div>
 
-    <!-- PRODUCTS -->
+   
     {% if products %}
     <div class="row g-4">
         {% for product in products %}
         <div class="col-md-3">
             <div class="card product-card h-100 shadow-sm">
 
-                <!-- IMAGE (CLICKABLE → PRODUCT DETAIL) -->
+                
                 <a href="{% url 'product_detail' product.id %}">
                     <img src="{{ product.image.url }}"
                          alt="{{ product.name }}"
@@ -118,7 +107,6 @@
 
                     <p class="fw-bold mt-2">₹ {{ product.price }}</p>
 
-                    
                     <a href="{% url 'cart_add' product.id %}"
                        class="btn btn-dark btn-sm w-100">
                         Add to Cart
@@ -135,10 +123,41 @@
 
 </div>
 
-<!-- FOOTER -->
+
 <footer class="bg-dark text-white text-center py-3 mt-5">
     © 2025 ShopNexa | Furniture & Home Décor
 </footer>
+
+
+<script>
+function parseJwt(token) {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    return JSON.parse(atob(base64));
+}
+
+const token = localStorage.getItem("token");
+const authArea = document.getElementById("auth-area");
+
+if (token) {
+    const payload = parseJwt(token);
+    const username = payload.username;
+
+    authArea.innerHTML = 
+        <span class="fw-semibold">Hi, ${username}</span>
+        <a href="#" class="btn btn-outline-danger btn-sm ms-2" onclick="logout()">Logout</a>
+    ;
+} else {
+    authArea.innerHTML = 
+        <a href="/login/" class="btn btn-outline-dark btn-sm">Login</a>
+    ;
+}
+
+function logout() {
+    localStorage.removeItem("token");
+    window.location.href = "/";
+}
+</script>
 
 </body>
 </html>

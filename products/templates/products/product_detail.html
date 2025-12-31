@@ -14,25 +14,22 @@
         
         <a class="navbar-brand fw-bold" href="/">ShopNexa</a>
 
-        <!-- RIGHT SIDE -->
+        
         <div class="ms-auto d-flex align-items-center gap-3">
 
-            <!-- WISHLIST -->
+            
             <a href="{% url 'wishlist' %}" class="btn btn-outline-danger btn-sm">
                 ❤️ Wishlist
             </a>
 
-            <!-- CART -->
+            
             <a href="{% url 'cart_detail' %}" class="btn btn-outline-dark btn-sm">
                 🛒 Cart
             </a>
 
-            <!-- AUTH -->
+            
             {% if user.is_authenticated %}
                 <span class="fw-semibold">Hi, {{ user.username }}</span>
-                <a href="{% url 'logout' %}" class="btn btn-dark btn-sm">
-                    Logout
-                </a>
             {% else %}
                 <a href="{% url 'login' %}" class="btn btn-outline-dark btn-sm">
                     Login
@@ -69,7 +66,7 @@
             <h4 class="fw-bold">₹ {{ product.price }}</h4>
 
 
-            <!-- DESCRIPTION -->
+           
             <h5 class="mt-4">Product Details</h5>
             <p style="line-height: 1.8;">
                 {{ product.description }}
@@ -82,11 +79,6 @@
    class="btn btn-outline-danger">
    ❤️ Add to Wishlist
 </a>
-
-<a href="{% url 'wishlist' %}" class="btn btn-outline-dark ms-2">
-    View Wishlist
-</a>
-
 
     </div>
 <script>

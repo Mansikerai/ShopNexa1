@@ -1,37 +1,65 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login, logout
-from django.contrib import messages
+from pyexpat.errors import messages
+from django.shortcuts import redirect, render
 from django.contrib.auth.models import User
+from rest_framework_simplejwt.views import TokenObtainPairView
+from .serializers import CustomTokenObtainPairSerializer
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
+from rest_framework import status
 
 
-def login_view(request):
-    if request.method == "POST":
-        email = request.POST.get("email")
-        password = request.POST.get("password")
 
-        # STEP 1: find user by email
-        user_obj = User.objects.filter(email=email).first()
-
-        if user_obj is None:
-            messages.error(request, "Invalid email or password")
-            return redirect("login")
-
-        # STEP 2: authenticate using username
-        user = authenticate(
-            request,
-            username=user_obj.username,
-            password=password
-        )
-
-        if user is not None:
-            login(request, user)
-            return redirect("/")
-        else:
-            messages.error(request, "Invalid email or password")
-
+def login_page(request):
     return render(request, "users/login.html")
 
 
+def register_page(request):
+    return render(request, "users/register.html")
+
+
+
+class RegisterAPIView(APIView):
+    def post(self, request):
+        username = request.data.get("username")
+        email = request.data.get("email")
+        password = request.data.get("password")
+
+        if not username or not password:
+            return Response(
+                {"error": "All fields are required"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        if User.objects.filter(username=username).exists():
+            return Response(
+                {"error": "Username already exists"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        User.objects.create_user(
+            username=username,
+            email=email,
+            password=password
+        )
+
+        return Response(
+            {"message": "Registration successful"},
+            status=status.HTTP_201_CREATED
+        )
+
+        
+class UserDashboardAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        return Response({
+            "message": f"Welcome {request.user.username} to ShopNexa"
+        })
+
+class CustomTokenObtainPairView(TokenObtainPairView):
+    serializer_class = CustomTokenObtainPairSerializer
+    
 def register_view(request):
     if request.method == "POST":
         username = request.POST.get("username")
@@ -43,14 +71,6 @@ def register_view(request):
             messages.error(request, "Passwords do not match")
             return redirect("register")
 
-        if User.objects.filter(username=username).exists():
-            messages.error(request, "Username already exists")
-            return redirect("register")
-
-        if User.objects.filter(email=email).exists():
-            messages.error(request, "Email already registered")
-            return redirect("register")
-
         User.objects.create_user(
             username=username,
             email=email,
@@ -58,11 +78,7 @@ def register_view(request):
         )
 
         messages.success(request, "Registration successful. Please login.")
-        return redirect("login")
+        return redirect("login")   
 
     return render(request, "users/register.html")
-
-
-def logout_view(request):
-    logout(request)
-    return redirect("login")
+    

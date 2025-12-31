@@ -15,15 +15,17 @@ def cart_add(request, product_id):
     request.session['cart'] = cart
     return redirect('cart_detail')
 
-
-
 def cart_detail(request):
     cart = request.session.get('cart', {})
     products = []
     total = 0
 
     for product_id, quantity in cart.items():
-        product = get_object_or_404(Product, id=product_id)
+        try:
+            product = Product.objects.get(id=product_id)
+        except Product.DoesNotExist:
+            continue   
+
         product.quantity = quantity
         product.subtotal = product.price * quantity
         total += product.subtotal
@@ -71,3 +73,28 @@ def cart_remove(request, product_id):
 
     request.session['cart'] = cart
     return redirect('cart_detail')
+
+def checkout(request):
+    cart = request.session.get('cart', {})
+    products = []
+    total = 0
+
+    for pid, qty in cart.items():
+        product = Product.objects.filter(id=pid).first()
+        if not product:
+            continue   
+
+        product.qty = qty
+        product.subtotal = product.price * qty
+        total += product.subtotal
+        products.append(product)
+
+    if not products:
+        request.session['cart'] = {}
+        return redirect('cart_detail')
+
+    return render(request, 'orders/checkout.html', {
+        'products': products,
+        'total': total
+    })
+

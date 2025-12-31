@@ -4,85 +4,128 @@
     <meta charset="UTF-8">
     <title>Checkout | ShopNexa</title>
 
-    <!-- Bootstrap -->
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body { background: #f8f9fa; }
+        .checkout-box { background: #fff; border-radius: 10px; padding: 25px; }
+        .section-title { font-weight: 600; margin-bottom: 15px; }
+    </style>
 </head>
+<body>
 
-<body class="bg-light">
-
-<div class="container mt-5">
+<div class="container my-5">
     <h2 class="mb-4">🧾 Checkout</h2>
 
-    <div class="card shadow-sm">
-        <div class="card-body">
+    <form method="POST" action="{% url 'place_order' %}">
+        {% csrf_token %}
+
+        <div class="row g-4">
 
             
-            <form method="POST">
-                {% csrf_token %}
+            <div class="col-md-7">
+                <div class="checkout-box">
 
-                
-                <div class="row mb-4">
-                    <div class="col-md-6">
-                        <label class="form-label">Name</label>
-                        <input type="text" name="name" class="form-control" required>
+                    <h5 class="section-title">Billing Details</h5>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label class="form-label">First Name *</label>
+                            <input type="text" name="first_name" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Last Name *</label>
+                            <input type="text" name="last_name" class="form-control" required>
+                        </div>
                     </div>
 
-                    <div class="col-md-6">
-                        <label class="form-label">Email</label>
+                    <div class="mb-3">
+                        <label class="form-label">Email *</label>
                         <input type="email" name="email" class="form-control" required>
                     </div>
-                </div>
 
-                <div class="row mb-4">
-                    <div class="col-md-8">
-                        <label class="form-label">Address</label>
-                        <textarea name="address" class="form-control" rows="3" required></textarea>
+                    <div class="mb-3">
+                        <label class="form-label">Phone *</label>
+                        <input type="text" name="phone" class="form-control" required>
                     </div>
 
-                    <div class="col-md-4">
-                        <label class="form-label">City</label>
-                        <input type="text" name="city" class="form-control" required>
+                    <div class="mb-3">
+                        <label class="form-label">Country *</label>
+                        <input type="text" name="country" class="form-control" required>
                     </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Street Address *</label>
+                        <textarea name="address" class="form-control" rows="2" required></textarea>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label class="form-label">City *</label>
+                            <input type="text" name="city" class="form-control" required>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">State *</label>
+                            <input type="text" name="state" class="form-control" required>
+                        </div>
+                    </div>
+
                 </div>
+            </div>
 
-                
-                <table class="table">
-                    <thead class="table-dark">
-                        <tr>
-                            <th>Product</th>
-                            <th style="width:120px;">Qty</th>
-                            <th style="width:150px;">Subtotal</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for item in items %}
-                        <tr>
-                            <td>{{ item.product.name }}</td>
-                            <td>{{ item.quantity }}</td>
-                            <td>₹ {{ item.subtotal }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-
-                <hr>
-
-                
-                <div class="d-flex justify-content-between align-items-center">
-                    <h4>Total: ₹ {{ total }}</h4>
-
-                    <button type="submit" class="btn btn-success btn-lg">
-                        Place Order
-                    </button>
-                </div>
-
-            </form>
             
+            <div class="col-md-5">
+                <div class="checkout-box">
+
+                    <h5 class="section-title">Your Order</h5>
+
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th class="text-end">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in cart_items %}
+                            <tr>
+                                <td>{{ item.product.name }} × {{ item.quantity }}</td>
+                                <td class="text-end">₹ {{ item.subtotal }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+
+                    <hr>
+
+                    <div class="d-flex justify-content-between fw-bold fs-5">
+                        <span>Total</span>
+                        <span>₹ {{ total }}</span>
+                    </div>
+                    <hr>
+<h5 class="section-title">Payment Method</h5>
+
+<div class="form-check">
+  <input class="form-check-input" type="radio" name="payment_method" value="COD" checked>
+  <label class="form-check-label">Cash on Delivery</label>
+</div>
+
+<div class="form-check mt-2">
+  <input class="form-check-input" type="radio" name="payment_method" value="ONLINE">
+  <label class="form-check-label">Online Payment (GPay / PhonePe)</label>
+</div>
+
+
+    <button type="submit" class="btn btn-success w-100 mt-4 py-2">
+        Place Order
+    </button>
 
         </div>
     </div>
-</div>
 
+</div>
+    </form>
+</div>
 </body>
 </html>
-
