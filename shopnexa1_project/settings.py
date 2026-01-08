@@ -70,6 +70,7 @@ TEMPLATES = [
             'context_processors': [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
+                'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
         },
@@ -77,6 +78,8 @@ TEMPLATES = [
 ]
 
 LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = 'login'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 WSGI_APPLICATION = 'shopnexa1_project.wsgi.application'
@@ -87,27 +90,32 @@ WSGI_APPLICATION = 'shopnexa1_project.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'shopnexa_db',
+        'USER': 'postgres',
+        'PASSWORD': 'postgres124',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
+
 
 #messages
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'
 
 #rest_framework
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ),
-}
+#REST_FRAMEWORK = {
+    #'DEFAULT_AUTHENTICATION_CLASSES': (
+        #'rest_framework_simplejwt.authentication.JWTAuthentication',
+    #),
+#}
 
-from datetime import timedelta
+#from datetime import timedelta
 
-SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),
-    'AUTH_HEADER_TYPES': ('Bearer',),
-}
+#SIMPLE_JWT = {
+    #'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),
+    #'AUTH_HEADER_TYPES': ('Bearer',),
+#}
 
 
 # Password validation

@@ -4,13 +4,22 @@
     <meta charset="UTF-8">
     <title>Checkout | ShopNexa</title>
 
-
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
-        body { background: #f8f9fa; }
-        .checkout-box { background: #fff; border-radius: 10px; padding: 25px; }
-        .section-title { font-weight: 600; margin-bottom: 15px; }
+        body {
+            background: #f8f9fa;
+        }
+        .checkout-box {
+            background: #fff;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.05);
+        }
+        .section-title {
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
     </style>
 </head>
 <body>
@@ -18,12 +27,12 @@
 <div class="container my-5">
     <h2 class="mb-4">🧾 Checkout</h2>
 
-    <form method="POST" action="{% url 'place_order' %}">
+    <form method="POST">
         {% csrf_token %}
 
         <div class="row g-4">
 
-            
+            <!-- BILLING DETAILS -->
             <div class="col-md-7">
                 <div class="checkout-box">
 
@@ -74,7 +83,7 @@
                 </div>
             </div>
 
-            
+            <!-- ORDER SUMMARY -->
             <div class="col-md-5">
                 <div class="checkout-box">
 
@@ -87,45 +96,62 @@
                                 <th class="text-end">Total</th>
                             </tr>
                         </thead>
+
                         <tbody>
-                            {% for item in cart_items %}
-                            <tr>
-                                <td>{{ item.product.name }} × {{ item.quantity }}</td>
-                                <td class="text-end">₹ {{ item.subtotal }}</td>
-                            </tr>
-                            {% endfor %}
+                        {% for item in items %}
+                        <tr>
+                            <td>{{ item.product.name }} × {{ item.quantity }}</td>
+                            <td class="text-end">₹ {{ item.product.price|floatformat:2 }}</td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="2">No items in cart</td>
+                        </tr>
+                        {% endfor %}
                         </tbody>
+
+
                     </table>
 
                     <hr>
 
                     <div class="d-flex justify-content-between fw-bold fs-5">
-                        <span>Total</span>
-                        <span>₹ {{ total }}</span>
+                    <span>Total</span>
+                    <span>₹ {{ total }}</span>
                     </div>
+
                     <hr>
-<h5 class="section-title">Payment Method</h5>
 
-<div class="form-check">
-  <input class="form-check-input" type="radio" name="payment_method" value="COD" checked>
-  <label class="form-check-label">Cash on Delivery</label>
-</div>
+                    
+                    <h5 class="section-title">Payment Method</h5>
 
-<div class="form-check mt-2">
-  <input class="form-check-input" type="radio" name="payment_method" value="ONLINE">
-  <label class="form-check-label">Online Payment (GPay / PhonePe)</label>
-</div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio"
+                               name="payment_method" value="COD" checked>
+                        <label class="form-check-label">
+                            Cash on Delivery
+                        </label>
+                    </div>
 
+                    <div class="form-check mt-2">
+                        <input class="form-check-input" type="radio"
+                               name="payment_method" value="ONLINE">
+                        <label class="form-check-label">
+                            Online Payment (GPay / PhonePe)
+                        </label>
+                    </div>
 
-    <button type="submit" class="btn btn-success w-100 mt-4 py-2">
-        Place Order
-    </button>
+                    <button type="submit"
+                            class="btn btn-success w-100 mt-4 py-2">
+                        Place Order
+                    </button>
+
+                </div>
+            </div>
 
         </div>
-    </div>
-
-</div>
     </form>
 </div>
+
 </body>
 </html>

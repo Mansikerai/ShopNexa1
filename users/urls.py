@@ -1,14 +1,8 @@
 from django.urls import path
-from .views import (
-    RegisterAPIView,
-    UserDashboardAPIView,
-    CustomTokenObtainPairView
-)
+from .views import login_view, register_view, logout_view
 
 urlpatterns = [
-    path("login/", CustomTokenObtainPairView.as_view(), name="jwt_login"),
-    path("dashboard/", UserDashboardAPIView.as_view(), name="jwt_dashboard"),
-    path("register/", RegisterAPIView.as_view(), name="jwt_register")
-
+    path("login/", login_view, name="login"),
+    path("register/", register_view, name="register"),
+    path("logout/", logout_view, name="logout"),
 ]
-

@@ -14,26 +14,20 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
     <div class="container">
 
-        
         <a class="navbar-brand fw-bold" href="/">ShopNexa</a>
 
-       
         <div class="ms-auto d-flex align-items-center gap-3">
 
-           
             <a href="{% url 'wishlist' %}" class="btn btn-outline-danger btn-sm">
                 ❤️ Wishlist
             </a>
 
-            
             <a href="{% url 'cart_detail' %}" class="btn btn-outline-dark btn-sm">
                 🛒 Cart
             </a>
-            
 
-            
             {% if user.is_authenticated %}
-                <span class="fw-semibold">Hi, {{ user.username }}</span>
+                <span class="fw-semibold">Hi, {{ request.user.username }}</span>
             {% else %}
                 <a href="{% url 'login' %}" class="btn btn-outline-dark btn-sm">
                     Login
@@ -48,42 +42,33 @@
 
     <h2 class="mb-4 text-center">❤️ My Wishlist</h2>
 
-    {% if products %}
-        <div class="row">
-            {% for product in products %}
+        {% if items %}
+            <div class="row">
+        {% for item in items %}
             <div class="col-md-4 mb-4">
-                <div class="card shadow-sm h-100">
+            <div class="card h-100 shadow-sm">
+            <img src="{{ item.product.image.url }}" class="card-img-top">
+            <div class="card-body text-center">
+                <h5>{{ item.product.name }}</h5>
+                <p class="fw-bold">₹ {{ item.product.price }}</p>
 
-                    
-                    <img src="{{ product.image.url }}" class="card-img-top" alt="{{ product.name }}">
+                <a href="{% url 'product_detail' item.product.id %}"
+                   class="btn btn-dark btn-sm w-100 mb-2">
+                   View Product
+                </a>
 
-                   
-                    <div class="card-body text-center">
-                        <h5 class="card-title">{{ product.name }}</h5>
-                        <p class="fw-bold">₹ {{ product.price }}</p>
-
-                        
-                        <a href="{% url 'product_detail' product.id %}"
-                           class="btn btn-dark btn-sm w-100 mb-2">
-                           View Product
-                        </a>
-
-                        
-                        <a href="{% url 'remove_from_wishlist' product.id %}"
-                           class="btn btn-danger btn-sm w-100">
-                           Remove
-                        </a>
-
-                    </div>
-                </div>
+                <a href="{% url 'remove_from_wishlist' item.product.id %}"
+                   class="btn btn-danger btn-sm w-100">
+                   Remove
+                </a>
             </div>
-            {% endfor %}
         </div>
-    {% else %}
-        <p class="text-center text-muted mt-5">
-            Your wishlist is empty.
-        </p>
-    {% endif %}
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<p class="text-center text-muted">Your wishlist is empty.</p>
+{% endif %}
 
 </div>
 

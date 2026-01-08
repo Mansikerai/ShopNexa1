@@ -18,17 +18,13 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
-from users.views import login_page, register_page
 from products.views import product_list
 
 urlpatterns = [
     path('admin/', admin.site.urls),
 
     path("", product_list, name="home"),
-    
-    path("login/", login_page, name="login"),
-    path("register/", register_page, name="register"),
-    path('user/', include('users.urls')),      
+    path("", include("users.urls")),      
     path('', include('products.urls')),
     path('cart/', include('cart.urls')),
     path('wishlist/', include('wishlist.urls')),

@@ -12,55 +12,56 @@
     <div class="card p-4 shadow" style="width: 400px;">
         <h3 class="text-center mb-3">Create Account</h3>
 
-        <div id="msg" class="text-center mb-2 text-danger"></div>
+        {% if messages %}
+            {% for message in messages %}
+                <p class="text-danger text-center">{{ message }}</p>
+            {% endfor %}
+        {% endif %}
 
-        
-        <form id="registerForm">
-            <input id="username" class="form-control mb-2" placeholder="Username" required>
-            <input id="email" class="form-control mb-2" placeholder="Email" required>
-            <input id="password" type="password" class="form-control mb-2" placeholder="Password" required>
+        <form method="POST" action="{% url 'register' %}">
+            {% csrf_token %}
 
-            
-            <button type="submit" class="btn btn-dark w-100">Register</button>
+            <input
+                type="text"
+                name="username"
+                class="form-control mb-2"
+                placeholder="Username"
+                required
+            >
+
+            <input
+                type="email"
+                name="email"
+                class="form-control mb-2"
+                placeholder="Email"
+                required
+            >
+
+            <input
+                type="password"
+                name="password1"
+                class="form-control mb-2"
+                placeholder="Password"
+                required
+            >
+
+            <input
+                type="password"
+                name="password2"
+                class="form-control mb-3"
+                placeholder="Confirm Password"
+                required
+            >
+
+            <button class="btn btn-dark w-100">Register</button>
         </form>
 
         <p class="text-center mt-3">
             Already have an account?
-            <a href="/login/">Login</a>
+            <a href="{% url 'login' %}">Login</a>
         </p>
     </div>
 </div>
-
-<script>
-document.getElementById("registerForm").addEventListener("submit", function(e) {
-    e.preventDefault();
-
-    fetch("http://127.0.0.1:8000/api/users/register/", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            username: document.getElementById("username").value,
-            email: document.getElementById("email").value,
-            password: document.getElementById("password").value
-        })
-    })
-    .then(res => res.json())
-    .then(data => {
-        document.getElementById("msg").innerText =
-            data.message || "Registration successful";
-
-        
-        setTimeout(() => {
-            window.location.href = "/login/";
-        }, 1000);
-    })
-    .catch(() => {
-        document.getElementById("msg").innerText = "Registration failed";
-    });
-});
-</script>
 
 </body>
 </html>
