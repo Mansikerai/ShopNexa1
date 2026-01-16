@@ -7,21 +7,18 @@
 <body>
 
 <div class="container mt-5">
-    <h2>My Orders</h2>
-
-{% if orders %}
+    <h2 class="mb-4">My Orders</h2>
+  
   {% for order in orders %}
-    <div>
-      <p><strong>Order ID:</strong> {{ order.id }}</p>
-      <p>Total: ₹{{ order.total_amount }}</p>
-      <p>Status: {{ order.status }}</p>
-      <p>Date: {{ order.created_at }}</p>
-      <hr>
-    </div>
-  {% endfor %}
-{% else %}
-  <p>No orders found.</p>
-{% endif %}
+    <div class="card mb-3 p-3">
+    <p><strong>Order #{{ order.id }}</strong></p>
+    <p>Total: ₹ {{ order.total_amount }}</p>
+    <p>Status: {{ order.status }}</p>
+    <a href="{% url 'order_summary' order.id %}">View Details</a>
+</div>
+{% empty %}
+<p>No orders found.</p>
+{% endfor %}
 
 </div>
 

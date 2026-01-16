@@ -33,11 +33,10 @@ def checkout(request):
             OrderItem.objects.create(
                 order=order,
                 product=item.product,
-                price=item.product.price,
                 quantity=item.quantity
             )
 
-        items.delete()
+        items.delete()  
         return redirect('order_success')
 
     return render(request, 'orders/checkout.html', {
@@ -45,14 +44,23 @@ def checkout(request):
         'total': total
     })
 
-
 @login_required
 def order_success(request):
     return render(request, 'orders/order_success.html')
 
 
-@login_required
+@login_required(login_url='login')
 def my_orders(request):
     orders = Order.objects.filter(user=request.user).order_by('-created_at')
     return render(request, 'orders/my_orders.html', {'orders': orders})
 
+
+@login_required(login_url='login')
+def order_summary(request, order_id):
+    order = get_object_or_404(Order, id=order_id, user=request.user)
+    items = order.items.all()
+
+    return render(request, "orders/order_summary.html", {
+        "order": order,
+        "items": items
+    })

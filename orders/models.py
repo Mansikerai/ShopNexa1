@@ -12,11 +12,12 @@ class Order(models.Model):
     )
 
     user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        null=True,
-        blank=True
-    )
+    settings.AUTH_USER_MODEL,
+    on_delete=models.SET_NULL,
+    null=True,
+    blank=True
+)
+
 
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
@@ -43,15 +44,19 @@ class Order(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
 
+    @property
+    def total(self):
+        return sum(item.subtotal for item in self.items.all())
+
     def __str__(self):
         return f"Order #{self.id}"
 
 
 class OrderItem(models.Model):
-    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')
+    order = models.ForeignKey(Order, related_name="items", on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    price = models.DecimalField(max_digits=10, decimal_places=2)
     quantity = models.PositiveIntegerField()
 
-    def __str__(self):
-        return f"{self.product.name} x {self.quantity}"
+    @property
+    def subtotal(self):
+        return self.product.price * self.quantity

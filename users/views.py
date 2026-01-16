@@ -2,6 +2,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
+
 
 def login_view(request):
     if request.method == "POST":
@@ -10,7 +12,7 @@ def login_view(request):
 
         user = authenticate(request, username=username, password=password)
         if user:
-            login(request, user)   # ✅ SESSION LOGIN
+            login(request, user)  
             return redirect("/")
         else:
             messages.error(request, "Invalid username or password")
@@ -21,6 +23,7 @@ def login_view(request):
 def register_view(request):
     if request.method == "POST":
         username = request.POST.get("username")
+        email = request.POST.get("email")
         password1 = request.POST.get("password1")
         password2 = request.POST.get("password2")
 
@@ -28,7 +31,25 @@ def register_view(request):
             messages.error(request, "Passwords do not match")
             return redirect("register")
 
-        User.objects.create_user(username=username, password=password1)
+        
+        if User.objects.filter(username=username).exists():
+            messages.error(request, "Username already exists")
+            return redirect("register")
+
+        
+        if User.objects.filter(email=email).exists():
+            messages.error(request, "Email already registered")
+            return redirect("register")
+
+        
+        user = User.objects.create_user(
+            username=username,
+            email=email,
+            password=password1
+        )
+
+        user.save()
+
         messages.success(request, "Registration successful. Please login.")
         return redirect("login")
 
@@ -41,5 +62,17 @@ def logout_view(request):
 
 
 
+@login_required
+def profile(request):
+    return render(request, "users/profile.html")
 
-    
+@login_required
+def delete_account(request):
+    user = request.user
+
+   
+    user.is_active = False
+    user.save()
+
+    logout(request)
+    return redirect("login")
