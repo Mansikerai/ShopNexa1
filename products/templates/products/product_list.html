@@ -146,16 +146,23 @@
                 </a>
 
                 <div class="card-body text-center">
-                    <h6 class="card-title">{{ product.name }}</h6>
-                    <small class="text-muted">{{ product.category.name }}</small>
+                <h6 class="card-title">{{ product.name }}</h6>
+                <small class="text-muted">{{ product.category.name }}</small>
 
-                    <p class="fw-bold mt-2">₹ {{ product.price }}</p>
+                <p class="fw-bold mt-2">₹ {{ product.price }}</p>
 
-                    <a href="{% url 'cart_add' product.id %}"
-                       class="btn btn-dark btn-sm w-100">
-                        Add to Cart
-                    </a>
-                </div>
+            {% if product.stock > 0 %}
+                <a href="{% url 'cart_add' product.id %}"
+                class="btn btn-dark btn-sm w-100">
+                    Add to Cart
+                </a>
+            {% else %}
+                <button class="btn btn-secondary btn-sm w-100" disabled>
+                    Out of Stock
+                </button>
+            {% endif %}
+        </div>
+
 
             </div>
         </div>

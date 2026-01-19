@@ -64,3 +64,26 @@ def order_summary(request, order_id):
         "order": order,
         "items": items
     })
+
+def place_order(request):
+    cart_items = CartItem.objects.filter(user=request.user)
+
+    order = Order.objects.create(user=request.user)
+
+    for item in cart_items:
+        OrderItem.objects.create(
+            order=order,
+            product=item.product,
+            product_name=item.product.name,
+            product_price=item.product.price,
+            quantity=item.quantity,
+            total_price=item.product.price * item.quantity
+        )
+
+        # reduce stock
+        item.product.stock -= item.quantity
+        if item.product.stock <= 0:
+            item.product.is_active = False
+        item.product.save()
+
+    cart_items.delete()
