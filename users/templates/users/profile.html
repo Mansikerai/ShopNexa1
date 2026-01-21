@@ -4,11 +4,13 @@
     <title>My Account | ShopNexa</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
+
 <body class="bg-light">
 
-<div class="container mt-5">
-    <div class="card shadow-sm">
-        <div class="card-body">
+<div class="container my-5">
+
+    <div class="card shadow-sm border-0 rounded-4">
+        <div class="card-body p-4">
 
             <h4 class="mb-3">👤 My Account</h4>
 
@@ -17,6 +19,33 @@
 
             <hr>
 
+            <!-- Stats -->
+            <div class="row text-center mb-4">
+                <div class="col-md-4">
+                    <div class="p-3 bg-light rounded">
+                        <h5>{{ total_orders }}</h5>
+                        <small>Total Orders</small>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="p-3 bg-light rounded">
+                        <h5>{{ orders.0.final_amount|default:"—" }}</h5>
+                        <small>Last Order Amount</small>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="p-3 bg-light rounded">
+                        <h5>{{ orders.0.status|default:"—" }}</h5>
+                        <small>Last Order Status</small>
+                    </div>
+                </div>
+            </div>
+
+            <hr>
+
+            <!-- Actions -->
             <div class="d-flex gap-3 flex-wrap">
                 <a href="{% url 'my_orders' %}" class="btn btn-outline-primary">
                     📦 My Orders
@@ -26,7 +55,11 @@
                     ❤️ Wishlist
                 </a>
 
-                <a href="{% url 'logout' %}" class="btn btn-outline-secondary">
+                <a href="{% url 'addresses' %}" class="btn btn-outline-secondary">
+                    🏠 Addresses
+                </a>
+
+                <a href="{% url 'logout' %}" class="btn btn-outline-dark">
                     Logout
                 </a>
             </div>
@@ -42,9 +75,8 @@
 
         </div>
     </div>
+
 </div>
 
 </body>
 </html>
-
-

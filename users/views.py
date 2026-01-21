@@ -3,6 +3,12 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
+from orders.models import Order
+from .models import Address
+from django.shortcuts import get_object_or_404
+from users.models import Address
+from django.contrib.auth import logout
+
 
 
 def login_view(request):
@@ -55,24 +61,105 @@ def register_view(request):
 
     return render(request, "users/register.html")
 
+@login_required
+def profile(request):
+    orders = Order.objects.filter(user=request.user).order_by('-created_at')[:5]
+    return render(request, 'users/profile.html', {
+        'orders': orders
+    })
+
+
+
+@login_required
+def profile_details(request):
+    return render(request, 'users/profile.html')
+
+
+@login_required
+def addresses(request):
+    if request.method == "POST":
+        address_line = request.POST.get("address_line")
+
+        if not address_line:
+            messages.error(request, "Address cannot be empty")
+            return redirect("addresses")
+
+        Address.objects.create(
+            user=request.user,
+            full_name=request.POST.get("full_name"),
+            phone=request.POST.get("phone"),
+            address_line=address_line,
+            city=request.POST.get("city"),
+            state=request.POST.get("state"),
+            pincode=request.POST.get("pincode"),
+            country=request.POST.get("country", "India")
+        )
+
+        messages.success(request, "Address added successfully")
+        return redirect("addresses")
+
+    addresses = Address.objects.filter(user=request.user)
+    return render(request, "users/addresses.html", {
+        "addresses": addresses
+    })
+
+
+@login_required
+def edit_address(request, id):
+    address = get_object_or_404(Address, id=id, user=request.user)
+
+    if request.method == 'POST':
+        address.full_name = request.POST.get('full_name')
+        address.phone = request.POST.get('phone')
+        address.address_line = request.POST.get('address_line')
+        address.city = request.POST.get('city')
+        address.state = request.POST.get('state')
+        address.pincode = request.POST.get('pincode')
+        address.save()
+
+        return redirect('addresses')
+
+    return render(request, 'users/edit_addressess.html', {
+        'address': address
+    })
+
+
+
+@login_required
+def delete_address(request, id):
+    address = get_object_or_404(Address, id=id, user=request.user)
+    address.delete()
+    messages.success(request, "Address deleted")
+    return redirect("addresses")
+
 
 def logout_view(request):
     logout(request)
     return redirect("login")
 
+@login_required
+def delete_account(request):
+    if request.method == "POST":
+        user = request.user
 
+        
+        user.is_active = False
+        user.save()
+
+        logout(request)
+        return redirect("login")
+
+    return redirect("profile")
 
 @login_required
 def profile(request):
-    return render(request, "users/profile.html")
+    orders = Order.objects.filter(user=request.user).order_by('-created_at')
+    total_orders = orders.count()
+    last_order = orders.first()
 
-@login_required
-def delete_account(request):
-    user = request.user
-
-   
-    user.is_active = False
-    user.save()
-
-    logout(request)
-    return redirect("login")
+    return render(request, 'users/profile.html', {
+        'orders': orders,
+        'total_orders': total_orders,
+        'last_order': last_order
+    })
+    

@@ -33,55 +33,53 @@
                     </h5>
 
                     {% if order.status == "Pending" %}
-                        <span class="badge bg-warning text-dark px-3 py-2">
-                            Pending
-                        </span>
+                        <span class="badge bg-warning text-dark px-3 py-2">Pending</span>
                     {% elif order.status == "Delivered" %}
-                        <span class="badge bg-success px-3 py-2">
-                            Delivered
-                        </span>
+                        <span class="badge bg-success px-3 py-2">Delivered</span>
                     {% elif order.status == "Cancelled" %}
-                        <span class="badge bg-danger px-3 py-2">
-                            Cancelled
-                        </span>
+                        <span class="badge bg-danger px-3 py-2">Cancelled</span>
                     {% else %}
-                        <span class="badge bg-secondary px-3 py-2">
-                            {{ order.status }}
-                        </span>
+                        <span class="badge bg-secondary px-3 py-2">{{ order.status }}</span>
                     {% endif %}
                 </div>
 
                 <!-- Order Details -->
                 <div class="row mb-3">
+
                     <div class="col-md-4">
                         <p class="text-muted mb-1">Order Date</p>
-                        <p class="fw-semibold">{{ order.created_at }}</p>
+                        <p class="fw-semibold">{{ order.created_at|date:"M d, Y, h:i A" }}</p>
                     </div>
 
                     <div class="col-md-4">
                         <p class="text-muted mb-1">Payment Method</p>
-                        <p class="fw-semibold">{{ order.payment_method }}</p>
+                        <p class="fw-semibold">
+                            {% if order.payment_method == "COD" %}
+                                Cash on Delivery
+                            {% else %}
+                                Online Payment
+                            {% endif %}
+                        </p>
                     </div>
 
                     <div class="col-md-4">
                         <p class="text-muted mb-1">Total Amount</p>
-                        <p class="fw-bold fs-5 text-success">
-                            ₹ {{ order.total_amount }}
+                        <p class="fw-bold text-success fs-5">
+                            ₹ {{ order.final_amount }}
                         </p>
                     </div>
+
                 </div>
 
                 <hr>
 
                 <!-- Action Buttons -->
                 <div class="d-flex flex-wrap gap-3">
-                    <a href="{% url 'order_summary' order.id %}"
-                       class="btn btn-dark px-4">
+                    <a href="{% url 'order_summary' order.id %}" class="btn btn-dark px-4">
                         <i class="bi bi-eye me-1"></i> View Details
                     </a>
 
-                    <a href="{% url 'product_list' %}"
-                       class="btn btn-outline-secondary px-4">
+                    <a href="{% url 'product_list' %}" class="btn btn-outline-secondary px-4">
                         <i class="bi bi-cart-plus me-1"></i> Buy Again
                     </a>
                 </div>

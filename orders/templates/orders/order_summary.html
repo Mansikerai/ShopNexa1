@@ -4,10 +4,7 @@
     <meta charset="UTF-8">
     <title>Order Summary | ShopNexa</title>
 
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Bootstrap Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 </head>
 
@@ -15,14 +12,14 @@
 
 <div class="container my-5">
 
-    <!-- Success Alert -->
+    <!-- Success Message -->
     <div class="alert alert-success d-flex align-items-center shadow-sm">
         <i class="bi bi-check-circle-fill fs-4 me-2"></i>
         <strong>Order Placed Successfully</strong>
     </div>
 
-    <!-- Order Summary Card -->
-    <div class="card shadow-lg border-0 rounded-4 mb-4">
+    <!-- Order Card -->
+    <div class="card shadow-lg border-0 rounded-4">
         <div class="card-body p-4">
 
             <!-- Header -->
@@ -41,11 +38,15 @@
                 </div>
                 <div class="col-md-3">
                     <p class="text-muted mb-1">Date</p>
-                    <p class="fw-semibold">{{ order.created_at }}</p>
+                    <p class="fw-semibold">
+                        {{ order.created_at|date:"M d, Y, h:i A" }}
+                    </p>
                 </div>
                 <div class="col-md-3">
                     <p class="text-muted mb-1">Payment</p>
-                    <p class="fw-semibold">{{ order.payment_method }}</p>
+                    <span class="badge bg-info text-dark">
+                        {{ order.payment_method }}
+                    </span>
                 </div>
                 <div class="col-md-3">
                     <p class="text-muted mb-1">Status</p>
@@ -53,7 +54,14 @@
                 </div>
             </div>
 
-            <!-- Products Table -->
+            <!-- Coupon Applied Message -->
+            {% if order.discount_amount > 0 %}
+            <div class="alert alert-success py-2 mb-4">
+                🎉 Coupon applied! You saved ₹ {{ order.discount_amount|floatformat:2 }}
+            </div>
+            {% endif %}
+
+            <!-- Products -->
             <div class="table-responsive">
                 <table class="table align-middle">
                     <thead class="table-light">
@@ -66,42 +74,71 @@
                     <tbody>
                         {% for item in order.items.all %}
                         <tr>
-                            <td>
-                                <strong>{{ item.product.name }}</strong>
+                            <td><strong>{{ item.product.name }}</strong></td>
+                            <td class="text-center">
+                                ₹ {{ item.product.price|floatformat:2 }}
                             </td>
-                            <td class="text-center">₹ {{ item.product.price }}</td>
                             <td class="text-center">{{ item.quantity }}</td>
                         </tr>
                         {% endfor %}
 
-                        <!-- Total -->
-                        <tr class="fw-bold border-top">
-                            <td>Total</td>
-                            <td class="text-center text-success">
-                                ₹ {{ order.total_amount }}
+                        <!-- SUBTOTAL -->
+                        <tr class="border-top">
+                            <td><strong>Subtotal</strong></td>
+                            <td colspan="2" class="text-end">
+                                ₹ {{ order.subtotal|floatformat:2 }}
                             </td>
-                            <td></td>
+                        </tr>
+
+                        <!-- DISCOUNT -->
+                        {% if order.discount_amount > 0 %}
+                            <tr class="text-danger">
+                            <td>Coupon Discount</td>
+                            <td colspan="2" class="text-end">
+                            - ₹ {{ order.discount_amount }}
+                            </td>
+                        </tr>
+                        {% endif %}
+
+
+
+                        <!-- DELIVERY -->
+                        <tr>
+                            <td>Delivery Charge</td>
+                            <td colspan="2" class="text-end">
+                                {% if order.delivery_charge > 0 %}
+                                    ₹ {{ order.delivery_charge|floatformat:2 }}
+                                {% else %}
+                                    <span class="text-success">FREE</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+
+                        <!-- FINAL -->
+                        <tr class="fw-bold fs-5 border-top">
+                            <td>Payable Amount</td>
+                            <td colspan="2" class="text-end text-success">
+                                ₹ {{ order.final_amount|floatformat:2 }}
+                            </td>
                         </tr>
                     </tbody>
                 </table>
             </div>
 
+            
+            <div class="d-flex gap-3 mt-4">
+                <a href="{% url 'my_orders' %}" class="btn btn-dark px-4">
+                    <i class="bi bi-bag-check me-1"></i> View My Orders
+                </a>
+                <a href="{% url 'product_list' %}" class="btn btn-outline-secondary px-4">
+                    <i class="bi bi-cart-plus me-1"></i> Continue Shopping
+                </a>
+            </div>
+
         </div>
-    </div>
-
-    <!-- Action Buttons -->
-    <div class="d-flex gap-3">
-        <a href="{% url 'my_orders' %}" class="btn btn-dark px-4">
-            <i class="bi bi-bag-check me-1"></i> View My Orders
-        </a>
-
-        <a href="{% url 'product_list' %}" class="btn btn-outline-secondary px-4">
-            <i class="bi bi-cart-plus me-1"></i> Continue Shopping
-        </a>
     </div>
 
 </div>
 
 </body>
 </html>
-
