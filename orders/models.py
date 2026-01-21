@@ -70,4 +70,19 @@ class Coupon(models.Model):
     def __str__(self):
         return self.code
 
-    
+class DeliveryCharge(models.Model):
+    min_order_amount = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        help_text="Minimum order amount for FREE delivery"
+    )
+    charge_amount = models.DecimalField(
+        max_digits=6,
+        decimal_places=2,
+        help_text="Delivery charge if order is below min amount"
+    )
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return f"Free above ₹{self.min_order_amount}"
+
