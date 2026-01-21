@@ -83,44 +83,45 @@
                         {% endfor %}
 
                         <!-- SUBTOTAL -->
-                        <tr class="border-top">
-                            <td><strong>Subtotal</strong></td>
-                            <td colspan="2" class="text-end">
-                                ₹ {{ order.subtotal|floatformat:2 }}
-                            </td>
-                        </tr>
+                        <!-- Subtotal -->
+<tr>
+    <td><strong>Subtotal</strong></td>
+    <td colspan="2" class="text-end">
+        ₹ {{ order.subtotal|floatformat:2 }}
+    </td>
+</tr>
 
-                        <!-- DISCOUNT -->
-                        {% if order.discount_amount > 0 %}
-                            <tr class="text-danger">
-                            <td>Coupon Discount</td>
-                            <td colspan="2" class="text-end">
-                            - ₹ {{ order.discount_amount }}
-                            </td>
-                        </tr>
-                        {% endif %}
+<!-- Discount -->
+{% if order.discount_amount > 0 %}
+<tr class="text-danger">
+    <td>Coupon Discount</td>
+    <td colspan="2" class="text-end">
+        - ₹ {{ order.discount_amount }}
+    </td>
+</tr>
+{% endif %}
 
 
+<!-- Delivery -->
+<tr>
+    <td>Delivery Charge</td>
+    <td colspan="2" class="text-end">
+        {% if order.delivery_charge > 0 %}
+            ₹ {{ order.delivery_charge|floatformat:2 }}
+        {% else %}
+            <span class="text-success">FREE</span>
+        {% endif %}
+    </td>
+</tr>
 
-                        <!-- DELIVERY -->
-                        <tr>
-                            <td>Delivery Charge</td>
-                            <td colspan="2" class="text-end">
-                                {% if order.delivery_charge > 0 %}
-                                    ₹ {{ order.delivery_charge|floatformat:2 }}
-                                {% else %}
-                                    <span class="text-success">FREE</span>
-                                {% endif %}
-                            </td>
-                        </tr>
+<!-- Final Amount -->
+<tr class="fw-bold fs-5">
+    <td>Payable Amount</td>
+    <td colspan="2" class="text-end text-success">
+        ₹ {{ order.final_amount|floatformat:2 }}
+    </td>
+</tr>
 
-                        <!-- FINAL -->
-                        <tr class="fw-bold fs-5 border-top">
-                            <td>Payable Amount</td>
-                            <td colspan="2" class="text-end text-success">
-                                ₹ {{ order.final_amount|floatformat:2 }}
-                            </td>
-                        </tr>
                     </tbody>
                 </table>
             </div>
